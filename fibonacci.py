@@ -9,7 +9,7 @@ if (n < 0):
      print("Must be greater than or equal to 0")
      exit()
 
-def matrix_multiply(a, b):
+def matrix_multiply(a, b):  # look into using the more efficient n^2.81 algorithm
      rowsA = len(a)
      if (rowsA == 0): return
      rowsB = len(b)
