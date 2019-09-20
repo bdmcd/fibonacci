@@ -2,8 +2,10 @@ import sys
 import time
 import math
 import numpy as np
+import json
 
 n = int(sys.argv[1])
+cache_file = "cache.json"
 print("Calculating fibonacci number %s\n" % n)
 if (n < 0):
      print("Must be greater than or equal to 0")
@@ -66,23 +68,41 @@ def fib2(n): #polynomial
 
      return f[n]
 
-print("calculating matrices")
-A = [[1, 1],
-     [1, 0]]
 
-pows = []
-logn = 0
-if (n >= 2):
-     logn = int(math.ceil(math.log(n + 1, 2)))
+def getPowers(logn):
+     pows = None
+     open(cache_file, 'a+')
+     with open(cache_file, 'r+') as infile:
+          try:
+               pows = json.load(infile)['powers']
+          except:
+               pows = []
 
-for i in range(logn):
-     pows.append(matrix_power(A, 2 ** i))
+     A = [[1, 1],
+          [1, 0]]
+
+     l = len(pows)
+     for i in range(logn - l):
+          k = i 
+          pows.append(matrix_power(A, 2 ** k))
+
+     with open(cache_file, 'w') as outfile:
+          cache = {}
+          cache['powers'] = pows
+          json.dump(cache, outfile)
+
+     return pows
 
 def fib3(n): #log(n)
+     print("Calculating.....")
      if (n == 0): return 0
      if (n == 1): return 1
 
-     
+     logn = None
+     if (n >= 2):
+          logn = int(math.ceil(math.log(n + 1, 2)))
+     pows = getPowers(logn)
+
      B = None
      if (logn == 0): B = A
      for i in range(logn):
@@ -99,26 +119,10 @@ def fib4(n):
      sqrt5 = math.sqrt(5)
      return (((1 + sqrt5) ** n) - ((1 - sqrt5) ** n)) / ((2**n) * sqrt5)
 
-# start1 = time.time()
-# f1 = fib1(n)
-# end1 = time.time()
-# t1 = end1 - start1
-
-print("starting fib3")
-
-start2 = 0#time.time()
-f2 = 0#fib2(n)
-end2 = 0#time.time()
-t2 = 0#end2 - start2
 
 start3 = time.time()
 f3 = fib3(n)
 end3 = time.time()
 t3 = end3 - start3
 
-# start4 = time.time()
-# f4 = fib4(n)
-# end4 = time.time()
-# t4 = end4 - start4
-
-print("fib2: %s, time=%s\n\nfib3: %s, time=%s" % (f2, t2, f3, t3))
+print("fib(%s): %s\ntime=%s" % (n, f3, t3))
