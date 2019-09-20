@@ -71,7 +71,7 @@ def fib2(n): #polynomial
 
 def getPowers(logn):
      pows = None
-     open(cache_file, 'a+')
+     with open(cache_file, 'a+') as _: _ = None
      with open(cache_file, 'r+') as infile:
           try:
                pows = json.load(infile)['powers']
@@ -83,13 +83,13 @@ def getPowers(logn):
 
      l = len(pows)
      for i in range(logn - l):
-          k = i 
+          k = i + l
           pows.append(matrix_power(A, 2 ** k))
 
      with open(cache_file, 'w') as outfile:
-          cache = {}
-          cache['powers'] = pows
-          json.dump(cache, outfile)
+          cache_data = {}
+          cache_data['powers'] = pows
+          json.dump(cache_data, outfile)
 
      return pows
 
